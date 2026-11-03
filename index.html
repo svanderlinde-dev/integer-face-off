@@ -1,0 +1,690 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Integer Challenge | ACS Grade 6/7</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap');
+:root{
+ --ink:#17233d;--muted:#63718a;--blue:#3158d5;--blue2:#5278f4;
+ --purple:#7254c8;--teal:#159c9a;--gold:#f5b942;--paper:#ffffff;
+ --line:#e1e8f4;--bg:#f2f5ff;--green:#12845d;
+}
+*{box-sizing:border-box}
+body{
+ margin:0;min-height:100vh;color:var(--ink);
+ font-family:'Nunito',Arial,sans-serif;
+ background:
+  radial-gradient(circle at 8% 12%,#dce7ff 0,transparent 23rem),
+  radial-gradient(circle at 92% 18%,#fce9c8 0,transparent 20rem),
+  linear-gradient(135deg,#f7f8ff,#edf4ff);
+}
+header{
+ position:relative;overflow:hidden;text-align:center;color:white;
+ padding:30px 18px 34px;
+ background:linear-gradient(120deg,#203c91 0%,#405fd0 52%,#7254c8 100%);
+ box-shadow:0 8px 28px #243d8733;
+}
+header:before,header:after{content:"";position:absolute;border:2px solid #ffffff22;border-radius:50%;pointer-events:none}
+header:before{width:230px;height:230px;left:-65px;top:-135px}
+header:after{width:300px;height:300px;right:-90px;bottom:-225px}
+.brand{position:relative;z-index:1;display:inline-flex;align-items:center;gap:12px}
+.logo{width:48px;height:48px;border-radius:15px;background:#ffffff20;border:1px solid #ffffff55;display:grid;place-items:center;font-size:27px;box-shadow:inset 0 1px 0 #ffffff55}
+header h1{margin:0;font-size:clamp(27px,4.5vw,42px);font-weight:900;letter-spacing:1.5px}
+header p{position:relative;z-index:1;margin:12px auto 0;color:#e7edff;font-size:15px;font-weight:600;letter-spacing:.1px;max-width:680px;line-height:1.5}header .definition strong{color:#fff;font-weight:900}
+main{max-width:930px;margin:28px auto;padding:0 17px 44px;display:grid;gap:19px}
+.panel{
+ background:var(--paper);border:1px solid #e5eaf5;border-radius:22px;padding:23px;
+ box-shadow:0 9px 28px #273e7910,0 2px 5px #273e7908;
+}
+h2{font-size:19px;font-weight:900;margin:0 0 17px;color:#263b79;display:flex;align-items:center;gap:9px}
+h2 .symbol{width:31px;height:31px;border-radius:10px;background:#edf1ff;display:grid;place-items:center;font-size:17px}
+.row{display:flex;gap:15px;flex-wrap:wrap;align-items:end}
+.field{flex:1;min-width:190px}
+label{display:block;font-weight:900;font-size:12px;letter-spacing:1px;color:#66748e;margin:0 0 8px 3px}
+select{
+ width:100%;padding:13px 14px;border:2px solid #e0e6f2;border-radius:12px;
+ font:700 16px 'Nunito',Arial,sans-serif;color:var(--ink);background:#fbfcff;outline:none;
+ transition:border-color .15s,box-shadow .15s;
+}
+select:focus{border-color:var(--blue2);box-shadow:0 0 0 4px #5278f422}
+.note{font-size:13px;line-height:1.6;color:var(--muted);margin:16px 2px 0;padding:12px 14px;background:#f5f7fc;border-radius:12px;border-left:4px solid #9aabe0}
+#game{
+ position:relative;overflow:hidden;text-align:center;padding:26px 22px 28px;
+ border:2px solid #e4eaff;
+ background:linear-gradient(180deg,#fff 0%,#fbfcff 100%);
+}
+#game:before{content:"";position:absolute;top:0;left:0;right:0;height:7px;background:linear-gradient(90deg,var(--teal),var(--blue2),var(--purple),var(--gold))}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.pill{display:inline-flex;align-items:center;gap:7px;padding:7px 12px;border-radius:30px;background:#edf2ff;color:#3851a5;font-size:12px;font-weight:900;letter-spacing:.6px}
+.pill:first-child{background:#e5f7f4;color:#137c77}
+.kicker{font-size:12px;font-weight:900;letter-spacing:2px;color:#8994aa;text-transform:uppercase;margin-top:29px}
+#problem{
+ font-size:clamp(30px,6vw,62px);font-weight:900;letter-spacing:.3px;line-height:1.35;
+ margin:22px auto 13px;min-height:100px;max-width:820px;display:flex;justify-content:center;align-items:center;flex-wrap:wrap;gap:10px;
+ color:#1e2c50;text-shadow:0 2px 0 #edf1ff;
+}
+#problem.wordy{font-size:clamp(20px,3.2vw,29px);font-weight:800;line-height:1.5;text-shadow:none}
+#formatTag{display:inline-flex;margin-top:14px;padding:6px 11px;border-radius:20px;background:#f1edff;color:#674ab4;font-size:11px;font-weight:900;letter-spacing:1px;text-transform:uppercase}
+#answer{font-size:clamp(26px,5vw,39px);font-weight:900;color:var(--green);min-height:51px;margin:7px 0}
+#message{color:var(--muted);font-weight:700;min-height:25px;margin:8px 0 20px}
+.actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+button{
+ border:0;border-radius:13px;padding:14px 22px;font:900 16px 'Nunito',Arial,sans-serif;
+ cursor:pointer;transition:transform .12s,box-shadow .12s,filter .12s;
+}
+button:hover:not(:disabled){transform:translateY(-2px);filter:brightness(1.04)}
+button:active:not(:disabled){transform:translateY(0)}
+button:disabled{opacity:.42;cursor:not-allowed}
+.primary{color:white;background:linear-gradient(135deg,#3158d5,#5879ed);box-shadow:0 5px 0 #233f9f,0 8px 16px #3158d533}
+.secondary{color:#344b9e;background:#edf1ff;border:1px solid #dce4ff;box-shadow:0 4px 0 #d9e1f8}
+#rotate{
+ display:none;background:linear-gradient(110deg,#fff5dc,#fff9ed);
+ border:2px solid #f4d58f;color:#80510c;padding:17px 19px;border-radius:16px;
+ text-align:center;font-weight:900;box-shadow:0 5px 16px #b9821a12;
+}
+#rotate:before{content:"↻";display:inline-grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#f7d98e;color:#72470b;margin-right:9px;font-size:19px;vertical-align:middle}
+
+.start-panel{text-align:center}
+.mode-choice{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;margin:18px 0}
+.mode-card{padding:20px 16px;border:2px solid #e1e8f4;border-radius:17px;background:#fbfcff;text-align:left;cursor:pointer;transition:.15s}
+.mode-card.selected{border-color:var(--blue2);background:#f0f4ff;box-shadow:0 0 0 3px #5278f422}
+.mode-card strong{display:block;font-size:19px;color:#263b79;margin-bottom:6px}
+.mode-card span{font-size:13px;line-height:1.5;color:var(--muted);font-weight:700}
+#studentNameWrap{display:none;max-width:420px;margin:16px auto;text-align:left}
+#studentName{width:100%;padding:14px;border:2px solid #e0e6f2;border-radius:12px;font:800 17px 'Nunito',Arial,sans-serif}
+#startGame{margin-top:12px}
+#individualStats{display:none;justify-content:center;gap:10px;flex-wrap:wrap;margin:8px 0 14px}
+#individualTabs{display:none;justify-content:center;gap:8px;margin:0 auto 16px}
+.tab-btn{padding:9px 16px;border-radius:11px;background:#edf2ff;color:#344b9e;border:1px solid #dce4ff;box-shadow:none;font-size:14px}
+.tab-btn.active{background:#3158d5;color:white;border-color:#3158d5}
+#incorrectPanel{display:none;max-width:700px;margin:0 auto 18px;padding:16px;border:1px solid #f1d8d3;background:#fff9f7;border-radius:15px;text-align:left}
+#incorrectPanel h3{margin:0 0 10px;color:#963e32;font-size:17px}
+.incorrect-item{padding:11px 0;border-top:1px solid #f0ded9;font-weight:800;color:#34415d;line-height:1.5}
+.incorrect-item:first-of-type{border-top:0}
+.incorrect-item small{display:block;color:#8a5b53;font-size:12px;font-weight:800;margin-top:3px}
+#incorrectEmpty{color:var(--muted);font-weight:700}
+.stat{padding:8px 14px;border-radius:12px;background:#edf2ff;color:#344b9e;font-weight:900;font-size:14px}
+#individualAnswerWrap{display:none;max-width:460px;margin:10px auto 16px}
+.home-button{display:inline-flex;align-items:center;gap:7px;width:auto;margin:0 0 14px;padding:9px 14px;background:#eef2f7;color:#263247;border:1px solid #d5dce7;border-radius:10px;font-weight:800;cursor:pointer}
+.home-button:hover{background:#e1e8f1}
+#studentAnswer{width:100%;padding:14px 16px;border:2px solid #dce4f5;border-radius:13px;text-align:center;font:900 25px 'Nunito',Arial,sans-serif;color:var(--ink)}
+#studentAnswer:focus{outline:none;border-color:var(--blue2);box-shadow:0 0 0 4px #5278f422}
+#feedback{min-height:28px;font-weight:900;margin:8px 0}
+#feedback.good{color:#12845d}#feedback.bad{color:#b34b36}
+@media(max-width:580px){.mode-choice{grid-template-columns:1fr}}
+@media(max-width:580px){
+ header{padding:25px 14px 29px}.panel{padding:18px 15px;border-radius:17px}
+ .field{min-width:100%}#problem{min-height:115px}
+ .topline{justify-content:center}
+ button{width:100%}
+}
+
+/* Face-Off visual refresh */
+:root{
+ --ink:#14213d;--muted:#62718d;--blue:#2549c7;--blue2:#4775f5;
+ --purple:#7547d8;--teal:#0e9f9a;--gold:#f5b942;--paper:#ffffff;
+ --line:#dce5f4;--bg:#eef3ff;--green:#0e9467;
+}
+body{
+ background:
+  radial-gradient(ellipse at 4% 8%,#cddcff 0,transparent 29rem),
+  radial-gradient(ellipse at 96% 5%,#ffe5b7 0,transparent 25rem),
+  radial-gradient(ellipse at 70% 95%,#e2d7ff 0,transparent 30rem),
+  linear-gradient(135deg,#f7f9ff,#edf2ff);
+}
+header{
+ padding:34px 18px 38px;
+ background:linear-gradient(115deg,#142c70 0%,#315bd2 48%,#7046c8 100%);
+}
+header h1{letter-spacing:2px;text-shadow:0 3px 12px #101e5555}
+.logo{width:54px;height:54px;border-radius:17px;background:linear-gradient(145deg,#ffffff35,#ffffff12);font-size:30px}
+main{max-width:1000px;gap:22px}
+.panel{
+ border:1px solid #dce5f4;border-radius:24px;padding:26px;
+ box-shadow:0 14px 38px #1c347018,0 3px 8px #1c34700c;
+}
+h2{font-size:21px;color:#1d3478}
+h2 .symbol{width:36px;height:36px;border-radius:12px;background:linear-gradient(145deg,#e8edff,#f1eaff);box-shadow:inset 0 1px 0 #fff}
+select,#studentName,#studentAnswer{
+ border:2px solid #d7e1f3;background:linear-gradient(180deg,#fff,#f8faff);
+ box-shadow:0 2px 5px #203a7110;
+}
+select{min-height:51px}
+#game{
+ border:2px solid #dbe5ff;
+ background:linear-gradient(160deg,#fff 0%,#fbfcff 65%,#f3f6ff 100%);
+ box-shadow:0 18px 44px #203a7118;
+}
+#game:before{height:8px;background:linear-gradient(90deg,#0eaaa0,#4775f5,#8455d9,#f4b942)}
+.topline{margin-bottom:4px}
+.pill{padding:9px 15px;box-shadow:0 2px 7px #203a7110}
+#problem{
+ padding:14px 18px;max-width:880px;min-height:126px;
+ border-radius:22px;background:linear-gradient(145deg,#f5f7ff,#fff);
+ border:1px solid #e7ecfa;box-shadow:inset 0 1px 0 #fff,0 8px 22px #263c7910;
+}
+#problem.wordy{padding:22px}
+#formatTag{padding:8px 14px;letter-spacing:1.2px}
+#answer{font-size:clamp(29px,5vw,43px);color:#07865e}
+#message{max-width:760px;margin:10px auto 22px;line-height:1.55}
+button{border-radius:14px}
+.primary{background:linear-gradient(135deg,#2549c7,#527cf4);box-shadow:0 5px 0 #1d378f,0 9px 20px #3158d533}
+.secondary{background:linear-gradient(180deg,#f5f7ff,#e9efff);box-shadow:0 4px 0 #d5def3}
+.mode-card{
+ border:2px solid #e0e7f5;border-radius:20px;
+ background:linear-gradient(145deg,#fff,#f7f9ff);
+ box-shadow:0 7px 18px #243d7910;
+}
+.mode-card.selected{border-color:#5578ed;background:linear-gradient(145deg,#eef3ff,#f8f5ff);box-shadow:0 0 0 4px #5278f422,0 9px 22px #243d7915}
+.mode-card strong{font-size:20px}
+#individualStats .stat{
+ padding:10px 16px;border:1px solid #dce5fa;
+ background:linear-gradient(145deg,#f1f5ff,#e9efff);box-shadow:0 3px 9px #203a7110;
+}
+#scoreTag{background:linear-gradient(145deg,#e3f8f0,#effcf6);color:#08744f;border-color:#c8eddd}
+#incorrectPanel{box-shadow:0 6px 18px #8d45300c}
+#studentAnswer{min-height:58px;font-size:28px}
+#feedback{font-size:16px;min-height:30px}
+.home-button{box-shadow:0 3px 8px #1b315014}
+@media(max-width:580px){
+ .panel{padding:19px 15px}
+ header{padding:27px 14px 31px}
+ #problem{min-height:105px;padding:12px 8px}
+}
+
+
+#doneGame{display:none;background:linear-gradient(135deg,#11845d,#16a477);color:white}
+#doneGame:disabled{opacity:.65;cursor:wait}
+#submissionStatus{display:none;max-width:650px;margin:14px auto;padding:14px 18px;border-radius:14px;font-weight:900;text-align:center}
+#submissionStatus.success{display:block;background:#e8f8f0;color:#08744f;border:1px solid #bfe8d4}
+#submissionStatus.error{display:block;background:#fff0ed;color:#a33d30;border:1px solid #f2c9c1}
+
+
+/* Agassiz Christian School identity */
+:root{
+ --acs-forest:#176b57;--acs-deep:#173b35;--acs-gold:#c6a34a;
+ --acs-mist:#eef5f1;--acs-cream:#fbfaf5;
+}
+body{
+ background:
+  radial-gradient(ellipse at 4% 8%,#dcebe4 0,transparent 29rem),
+  radial-gradient(ellipse at 96% 5%,#f2ead3 0,transparent 25rem),
+  linear-gradient(135deg,#fbfcf9,#edf4ef);
+}
+.school-header{
+ position:relative;overflow:hidden;text-align:left;color:#fff;
+ padding:25px 22px 24px;
+ background:linear-gradient(118deg,#143d35 0%,#176b57 58%,#245d4d 100%);
+ box-shadow:0 10px 30px #173b352b;
+}
+.school-header:before,.school-header:after{
+ content:"";position:absolute;border:1px solid #ffffff20;border-radius:50%;pointer-events:none;
+}
+.school-header:before{width:330px;height:330px;right:-110px;top:-220px}
+.school-header:after{width:250px;height:250px;right:90px;bottom:-205px}
+.header-inner{position:relative;z-index:1;max-width:1000px;margin:0 auto}
+.school-brand{display:flex;align-items:center;gap:24px}
+.school-logo{
+ display:block;width:190px;height:144px;object-fit:contain;object-position:center;
+ padding:9px 12px;background:#fff;border-radius:17px;
+ box-shadow:0 7px 20px #071f1b40;
+}
+.brand-copy{min-width:0}
+.eyebrow{font-size:12px;font-weight:900;letter-spacing:3px;color:#e4d6a9;margin-bottom:7px}
+.school-header h1{
+ margin:0;font-size:clamp(32px,5vw,52px);line-height:1.05;font-weight:900;
+ letter-spacing:-1px;color:#fff;text-shadow:0 2px 12px #071f1b35;
+}
+.grade-line{margin-top:12px;font-size:13px;font-weight:900;letter-spacing:2px;color:#f1ead8}
+.grade-dot{padding:0 7px;color:#d5b96e}
+.header-rule{width:100%;height:1px;margin:19px 0 12px;background:linear-gradient(90deg,#d2b56b99,#ffffff30,transparent)}
+.school-header .definition{position:relative;z-index:1;margin:0;color:#e8f1eb;font-size:14px;font-weight:600;letter-spacing:.15px;max-width:680px;line-height:1.55}
+.header-decoration{position:absolute;right:12px;bottom:10px;display:flex;gap:10px;opacity:.18;font-size:27px;font-weight:900;color:#f2dfac;transform:rotate(-8deg)}
+@media(max-width:600px){
+ .school-header{padding:20px 15px}
+ .school-brand{gap:14px;align-items:center}
+ .school-logo{width:112px;height:86px;padding:5px;border-radius:12px}
+ .eyebrow{font-size:9px;letter-spacing:1.5px}
+ .school-header h1{font-size:clamp(25px,7vw,36px)}
+ .grade-line{font-size:10px;letter-spacing:1px;margin-top:8px}
+ .school-header .definition{font-size:12px}
+}
+
+
+/* ACS official palette: teal, coral red, and gold */
+:root{
+ --ink:#243b3a;--muted:#667775;--blue:#5b9290;--blue2:#477f7d;
+ --purple:#ef554f;--teal:#5b9290;--gold:#e4b93c;--green:#477f7d;
+ --line:#dce8e5;--bg:#f5f8f6;
+}
+body{
+ background:
+  radial-gradient(ellipse at 5% 8%,#dcebe8 0,transparent 29rem),
+  radial-gradient(ellipse at 96% 5%,#fff0cf 0,transparent 25rem),
+  radial-gradient(ellipse at 78% 95%,#fbe2df 0,transparent 28rem),
+  linear-gradient(135deg,#fbfcfa,#eff5f2);
+}
+.school-header{
+ background:linear-gradient(118deg,#426f6e 0%,#5b9290 58%,#477f7d 100%);
+ box-shadow:0 10px 30px #355f5d35;
+}
+.school-header:after{border-color:#ef554f55}
+.eyebrow{color:#f5d66d}
+.grade-dot{color:#e4b93c}
+.header-rule{background:linear-gradient(90deg,#e4b93ccc,#ef554f88,#ffffff30,transparent)}
+#game:before{background:linear-gradient(90deg,#5b9290 0%,#5b9290 38%,#ef554f 38%,#ef554f 70%,#e4b93c 70%,#e4b93c 100%)}
+h2{color:#426f6e}
+h2 .symbol{background:#e7f0ee}
+select:focus,#studentName:focus,#studentAnswer:focus{border-color:#5b9290;box-shadow:0 0 0 4px #5b929022}
+.note{border-left-color:#5b9290}
+.pill{background:#e8f1ef;color:#426f6e}
+.pill:first-child{background:#e8f1ef;color:#426f6e}
+#formatTag{background:#fff0ee;color:#bd4944}
+.primary,.tab-btn.active{
+ background:linear-gradient(135deg,#5b9290,#477f7d);
+ border-color:#477f7d;color:#fff;
+ box-shadow:0 5px 0 #365f5e,0 8px 16px #477f7d33;
+}
+.secondary,.tab-btn{
+ color:#426f6e;background:#e8f1ef;border:1px solid #d1e2de;
+ box-shadow:0 4px 0 #d7e5e1;
+}
+.mode-card.selected{border-color:#5b9290;background:linear-gradient(145deg,#eaf3f1,#fff);box-shadow:0 0 0 4px #5b929022,0 9px 22px #355f5d15}
+.mode-card strong{color:#426f6e}
+#scoreTag{background:#fff5d9;color:#80651b;border-color:#f0dda0}
+#answer{color:#477f7d}
+#feedback.good{color:#477f7d}
+#feedback.bad,#incorrectPanel h3{color:#bd4944}
+#incorrectPanel{border-color:#f3d5d1;background:#fff9f8}
+#doneGame{background:linear-gradient(135deg,#5b9290,#477f7d)}
+@media(max-width:600px){.school-header{background:linear-gradient(145deg,#426f6e,#5b9290)}}
+
+</style>
+</head>
+<body>
+<header class="school-header">
+  <div class="header-inner">
+    <div class="school-brand">
+      <img class="school-logo" src="data:image/png;base64,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" alt="Agassiz Christian School logo">
+      <div class="brand-copy">
+        <div class="eyebrow">AGASSIZ CHRISTIAN SCHOOL</div>
+        <h1>The Integer Challenge</h1>
+        <div class="grade-line">GRADE 6/7 <span class="grade-dot">•</span> THINK. SOLVE. SUCCEED.</div>
+      </div>
+    </div>
+    <div class="header-rule"></div>
+    <p class="definition">A whole-number challenge with positive numbers, negative numbers and zero. How well do you know your integers?</p>
+    <div class="header-decoration" aria-hidden="true"><span>+</span><span>−</span><span>×</span><span>÷</span></div>
+  </div>
+</header>
+<main>
+<section class="panel start-panel" id="startPanel">
+<h2><span class="symbol">🎮</span> How would you like to play?</h2>
+<p style="color:var(--muted);font-weight:700;margin:0 0 12px">Choose a game mode to get started.</p>
+<div class="mode-choice">
+ <button type="button" class="mode-card selected" id="partnerChoice"><strong>👥 Partner Mode</strong><span>Play with a partner or as a class. Solve on whiteboards and reveal the answer together.</span></button>
+ <button type="button" class="mode-card" id="individualChoice"><strong>🏆 Individual Mode</strong><span>Play on your own. Type each answer and earn points for every correct response.</span></button>
+</div>
+<div id="studentNameWrap"><label for="studentName">YOUR NAME</label><input id="studentName" type="text" maxlength="40" placeholder="Enter your name" autocomplete="off"></div>
+<button class="primary" id="startGame">Start Partner Game</button>
+</section>
+<section class="panel" id="challengePanel" style="display:none">
+<button type="button" class="home-button" id="homeButton" aria-label="Return to game selection">← Home</button>
+<h2><span class="symbol">⚙</span> Choose your challenge</h2>
+<div class="row">
+ <div class="field"><label for="mode">QUESTION TYPE</label>
+ <select id="mode">
+  <option value="addition" selected>Addition only</option>
+  <option value="subtraction">Subtraction only</option>
+  <option value="both">Addition and subtraction</option>
+  <option value="bedmas">BEDMAS</option>
+  <option value="all">All operations</option>
+ </select></div>
+ <div class="field"><label for="level">CHALLENGE LEVEL</label>
+ <select id="level">
+  <option value="newb" selected>Newbyy</option>
+  <option value="mid">Mid</option>
+  <option value="mid2">Mid2</option>
+  <option value="stretch">Stretch</option>
+  <option value="boss">Boss Mode</option>
+ </select></div>
+</div>
+<p class="note" id="challengeNote">Choose your level. Newby, Mid and Mid2 use two terms. Stretch and Boss bring the extra challenge.</p>
+</section>
+
+<section class="panel" id="game" style="display:none">
+<div class="topline"><span class="pill" id="questionCount">QUESTION 1 OF 3</span><span class="pill" id="modeTag">ADDITION + SUBTRACTION</span></div>
+<div id="individualStats"><span class="stat" id="playerTag">PLAYER</span><span class="stat" id="scoreTag">SCORE: 0</span><span class="stat" id="correctTag">CORRECT: 0</span></div>
+<div id="individualTabs"><button type="button" class="tab-btn active" id="gameTab">Game</button><button type="button" class="tab-btn" id="incorrectTab">Incorrect (0)</button></div>
+<div id="incorrectPanel"><h3>Questions to review</h3><div id="incorrectList"><p id="incorrectEmpty">You have not missed any questions yet. Keep it up!</p></div></div>
+<div class="kicker" id="kicker">✦ &nbsp; Solve this on your whiteboard &nbsp; ✦</div>
+<div id="formatTag">READY TO PLAY</div>
+<div id="problem">Ready?</div>
+<div id="answer" aria-live="polite"></div>
+<div id="message">Choose a challenge, then click “New problem”.</div>
+<div id="individualAnswerWrap"><input id="studentAnswer" type="text" placeholder="Type your answer" autocomplete="off" aria-label="Your answer"><div id="feedback" aria-live="polite"></div></div>
+<div class="actions">
+ <button class="primary" id="newProblem">New problem</button>
+ <button class="primary" id="submitAnswer" style="display:none">Submit answer</button>
+ <button class="secondary" id="reveal" disabled>Reveal answer</button>
+ <button class="primary" id="doneGame" type="button">Done</button>
+</div>
+<div id="submissionStatus" role="status" aria-live="polite"></div>
+</section>
+<div id="rotate">TIME TO ROTATE! Find a new partner, then start the next set of 3 questions.</div>
+</main>
+<script>
+const $=id=>document.getElementById(id);
+// Paste your deployed Google Apps Script web app URL between the quotes.
+const RESULTS_ENDPOINT='https://script.google.com/macros/s/AKfycbxZfGYis8d_4OpxyVDxV-sI6Jbn1JYy29ok1V3t_XS3AnifIx26xNpJYmURybjJUw9E1A/exec';
+let questionNumber=0, answer=null, explanation='', revealed=false;
+let playMode='partner', playerName='', score=0, correctCount=0, answered=false, incorrectAnswers=[];
+let attempts=[], submissionComplete=false;
+function rand(min,max){return Math.floor(Math.random()*(max-min+1))+min}
+function pick(arr){return arr[rand(0,arr.length-1)]}
+function signed(min,max){return rand(min,max)}
+function fmt(n){return n<0?`(${n})`:String(n)}
+function addSubQuestion(mode,level,format){
+ const range=level==='newb'?10:level==='mid'?20:level==='mid2'?100:level==='stretch'?50:100;
+ const op=mode==='addition'?'+':'−';
+ const calc=(a,b)=>op==='+'?a+b:a-b;
+ if(format==='missing'){
+  const a=signed(-range,range), x=signed(-range,range), result=calc(a,x);
+  return {expression:op==='+'?`${fmt(a)} + □ = ${result}`:`${fmt(a)} − □ = ${result}`,result:x,explanation:`The missing number is ${x}. Check: ${fmt(a)} ${op} ${fmt(x)} = ${result}.`,wordy:false};
+ }
+ if(format==='compare'){
+  const a=signed(-range,range),b=signed(-range,range),c=signed(-range,range),d=signed(-range,range);
+  const left=calc(a,b),right=calc(c,d),symbol=left>right?'>':left<right?'<':'=';
+  return {expression:`${fmt(a)} ${op} ${fmt(b)}   ___   ${fmt(c)} ${op} ${fmt(d)}`,result:symbol,explanation:`The left side equals ${left}. The right side equals ${right}. Therefore the correct symbol is ${symbol}.`,wordy:false};
+ }
+ if(format==='error'){
+  const a=signed(-range,range),b=signed(-range,range),correct=calc(a,b),wrong=correct+(pick([-3,-2,2,3,5]));
+  return {expression:`TRUE OR FALSE?\n${fmt(a)} ${op} ${fmt(b)} = ${wrong}`,result:'False',explanation:`It is false. ${fmt(a)} ${op} ${fmt(b)} = ${correct}.`,wordy:true};
+ }
+ if(format==='story'){
+  const a=signed(-range,range),b=signed(1,range),res=calc(a,b);
+  const story=op==='+'?`A hiker is ${Math.abs(a)} ${a<0?'metres below':'metres above'} sea level. The hiker climbs ${b} metres. What is the new position relative to sea level?`:`The temperature is ${a}°C. It changes by a decrease of ${b}°C. What is the new temperature?`;
+  return {expression:story,result:res,explanation:`${a} ${op} ${b} = ${res}.`,wordy:true};
+ }
+ const count=level==='stretch'?3:level==='boss'?4:2;
+ const nums=Array.from({length:count},()=>signed(-range,range));
+ let result=nums[0],expression=fmt(nums[0]);
+ for(let i=1;i<count;i++){expression+=` ${op} ${fmt(nums[i])}`;result=calc(result,nums[i]);}
+ return {expression,result,explanation:`Work from left to right: the result is ${result}.`,wordy:false};
+}
+function bedmasQuestion(level,format){
+ const max=level==='newb'?8:level==='mid'?12:level==='mid2'?30:level==='stretch'?40:60;
+ if(format==='missing'){
+  const a=rand(2,max),b=rand(2,8),x=rand(2,8),res=a+b*x;
+  return {expression:`${a} + (□ × ${b}) = ${res}`,result:x,explanation:`Subtract ${a} from ${res}: ${res-a}. Then divide by ${b}: the missing number is ${x}.`,wordy:false};
+ }
+ if(format==='compare'){
+  const a=rand(2,max),b=rand(2,8),c=rand(2,8),d=rand(2,8),l=a+b*c,r=(a+b)*c;
+  return {expression:`${a} + ${b} × ${c}   ___   (${a} + ${b}) × ${c}`,result:l>r?'>':l<r?'<':'=',explanation:`Left side = ${l}. Right side = ${r}. The correct symbol is ${l>r?'>':l<r?'<':'='}.`,wordy:false};
+ }
+ if(format==='error'){
+  const a=rand(2,max),b=rand(2,8),c=rand(2,8),correct=a+b*c;
+  return {expression:`TRUE OR FALSE?\n${a} + ${b} × ${c} = ${(a+b)*c}`,result:'False',explanation:`Multiplication comes first: ${b} × ${c} = ${b*c}; then add ${a}. Answer: ${correct}.`,wordy:true};
+ }
+ if(format==='story'){
+  const start=rand(-10,10),groups=rand(2,6),each=rand(2,8),change=rand(1,12),res=start+groups*each-change;
+  return {expression:`A team starts with ${start} points, earns ${groups} bonuses of ${each} points, then loses ${change} points. What is its final score?`,result:res,explanation:`Multiply first: ${groups} × ${each} = ${groups*each}. Then ${start} + ${groups*each} − ${change} = ${res}.`,wordy:true};
+ }
+ const a=signed(-max,max),b=rand(2,8),c=rand(2,8),d=rand(1,10);
+ const variants=[
+  {expression:`(${a} + ${b}) × ${c} − ${d}`,result:(a+b)*c-d},
+  {expression:`${a} − (${b} × ${c}) + ${d}`,result:a-b*c+d},
+  {expression:`(${a} − ${b}) × ${c} + ${d}`,result:(a-b)*c+d},
+  {expression:`${a} + ${b} × (${c} − ${d})`,result:a+b*(c-d)}
+ ];
+ const q=pick(variants);q.explanation=`Follow BEDMAS: brackets first, then multiplication/division, then addition/subtraction. The answer is ${q.result}.`;return q;
+}
+function makeProblem(){
+ const mode=$('mode').value,level=$('level').value;
+ // Newby, Mid and Mid2 always use exactly TWO terms and ONE operation.
+ if(['newb','mid','mid2'].includes(level)){
+  const range=level==='newb'?10:level==='mid'?20:100;
+  let op;
+  if(mode==='addition') op='+';
+  else if(mode==='subtraction') op='−';
+  else if(mode==='both') op=pick(['+','−']);
+  else if(mode==='bedmas') op=pick(['×','÷']);
+  else op=pick(['+','−','×','÷']);
+  let a,b,result;
+  if(op==='+') { a=signed(-range,range); b=signed(-range,range); result=a+b; }
+  else if(op==='−') { a=signed(-range,range); b=signed(-range,range); result=a-b; }
+  else if(op==='×') { a=signed(-range,range); b=signed(-range,range); result=a*b; }
+  else { b=rand(2,range||10); result=rand(-range,range); a=b*result; }
+  return {expression:`${fmt(a)} ${op} ${fmt(b)}`,result,explanation:`${fmt(a)} ${op} ${fmt(b)} = ${result}.`,format:'CALCULATE',wordy:false};
+ }
+ let formats;
+ if(mode==='addition'||mode==='subtraction') formats=['calculation','missing','compare','error','story'];
+ else if(mode==='both') formats=['calculation','missing','compare','error','story'];
+ else formats=['calculation','missing','compare','error','story'];
+ const format=pick(formats);
+ let q;
+ if(mode==='addition'||mode==='subtraction') q=addSubQuestion(mode,level,format);
+ else if(mode==='both'){
+  const op=pick(['addition','subtraction']);q=addSubQuestion(op,level,format);
+ }
+ else q=bedmasQuestion(level,format);
+ const labels={calculation:'CALCULATE',missing:'FIND THE MISSING NUMBER',compare:'COMPARE THE EXPRESSIONS',error:'SPOT THE ERROR',story:'WORD PROBLEM'};
+ q.format=labels[format];return q;
+}
+function next(){
+ const q=makeProblem();answer=q.result;explanation=q.explanation;revealed=false;answered=false;questionNumber++;
+ $('problem').textContent=q.expression;$('problem').classList.toggle('wordy',q.wordy);
+ $('formatTag').textContent=q.format;$('answer').textContent='';$('feedback').textContent='';$('feedback').className='';
+ $('reveal').disabled=false;$('reveal').textContent='Reveal answer';
+ if(playMode==='individual'){
+  $('questionCount').textContent=`QUESTION ${questionNumber}`;
+  $('message').textContent='Type your answer, then submit it to see how you did.';
+  $('individualAnswerWrap').style.display='block';$('kicker').textContent='✦  Solve this problem  ✦';
+  $('studentAnswer').value='';$('studentAnswer').disabled=false;
+  $('submitAnswer').disabled=false;$('submitAnswer').textContent='Submit answer';
+  $('newProblem').style.display='none';$('reveal').style.display='none';$('submitAnswer').style.display='inline-block';
+  $('studentAnswer').focus();
+ }else{
+  const inSet=((questionNumber-1)%3)+1;
+  $('questionCount').textContent=`QUESTION ${inSet} OF 3`;
+  $('message').textContent='Work it out on your whiteboard. Reveal the answer when everyone is ready.';
+  $('individualAnswerWrap').style.display='none';$('kicker').textContent='✦  Solve this on your whiteboard  ✦';
+  $('newProblem').style.display='inline-block';$('reveal').style.display='inline-block';$('submitAnswer').style.display='none';$('doneGame').style.display='none';
+  $('rotate').style.display=questionNumber%3===0?'block':'none';
+ }
+}
+function normaliseAnswer(value){return String(value).trim().replace(/−/g,'-').replace(/,/g,'').toLowerCase()}
+function submitIndividualAnswer(){
+ if(answered)return;
+ const typed=$('studentAnswer').value;
+ if(!typed.trim()){$('feedback').textContent='Enter an answer first.';$('feedback').className='bad';return;}
+ answered=true;
+ const isCorrect=normaliseAnswer(typed)===normaliseAnswer(answer);
+ attempts.push({
+  question:$('problem').textContent,
+  studentAnswer:typed.trim(),
+  correctAnswer:String(answer),
+  correct:isCorrect,
+  level:$('level').value,
+  format:$('formatTag').textContent
+ });
+ if(isCorrect){
+  const points={newb:10,mid:15,mid2:20,stretch:30,boss:50}[$('level').value]||10;
+  score+=points;correctCount++;
+  $('feedback').textContent=`Correct! +${points} points`;$('feedback').className='good';
+ }else{
+  incorrectAnswers.push({question:$('problem').textContent, studentAnswer:typed.trim(), correctAnswer:String(answer)});
+  $('feedback').textContent=`Not quite. The correct answer is ${answer}.`;$('feedback').className='bad';
+  renderIncorrectAnswers();
+ }
+ $('answer').textContent='Answer: '+answer;
+ $('message').textContent=explanation;
+ $('scoreTag').textContent=`SCORE: ${score}`;$('correctTag').textContent=`CORRECT: ${correctCount}`;
+ $('studentAnswer').disabled=true;$('submitAnswer').disabled=true;
+ $('submitAnswer').textContent='Answer submitted';
+ $('newProblem').style.display='inline-block';$('newProblem').textContent='Next question';$('doneGame').style.display='inline-block';
+}
+
+
+async function finishIndividualGame(){
+ if(playMode!=='individual'||submissionComplete)return;
+ if(!attempts.length){
+  $('submissionStatus').textContent='Answer at least one question before finishing.';
+  $('submissionStatus').className='error';$('submissionStatus').style.display='block';return;
+ }
+ const endpoint=RESULTS_ENDPOINT.trim();
+ if(!endpoint.startsWith('https://script.google.com/macros/s/')){
+  $('submissionStatus').textContent='The results sheet has not been connected yet. Ask your teacher to finish setting up the results link.';
+  $('submissionStatus').className='error';$('submissionStatus').style.display='block';return;
+ }
+ const levelNames={newb:'Newby',mid:'Mid',mid2:'Mid2',stretch:'Stretch',boss:'Boss Mode'};
+ const total=attempts.length;
+ const payload={
+  studentName:playerName,
+  level:levelNames[$('level').value]||$('level').value,
+  questionType:$('mode').selectedOptions[0].text,
+  questionsAttempted:total,
+  correct:correctCount,
+  incorrect:total-correctCount,
+  score:score,
+  accuracy:Math.round((correctCount/total)*100),
+  answers:attempts
+ };
+ $('doneGame').disabled=true;$('doneGame').textContent='Submitting...';
+ $('submissionStatus').style.display='none';
+ try{
+  // Google Apps Script does not expose a readable cross-origin response here.
+  // no-cors sends the submission while avoiding browser CORS restrictions.
+  await Promise.race([
+   fetch(endpoint,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)}),
+   new Promise((_,reject)=>setTimeout(()=>reject(new Error('Submission timed out')),15000))
+  ]);
+  submissionComplete=true;
+  $('doneGame').textContent='Submission sent';
+  $('submissionStatus').textContent=`Great work, ${playerName}! Your result has been sent. Your teacher will check the results sheet. Final score: ${score} points.`;
+  $('submissionStatus').className='success';
+  $('studentAnswer').disabled=true;$('submitAnswer').disabled=true;$('newProblem').disabled=true;
+ }catch(err){
+  $('doneGame').disabled=false;$('doneGame').textContent="I'm Done";
+  $('submissionStatus').textContent='Something went wrong while sending your result. Please tell your teacher and try again.';
+  $('submissionStatus').className='error';
+ }
+}
+$('doneGame').addEventListener('click',finishIndividualGame);
+
+function renderIncorrectAnswers(){
+ $('incorrectTab').textContent=`Incorrect (${incorrectAnswers.length})`;
+ if(!incorrectAnswers.length){$('incorrectList').innerHTML='<p id="incorrectEmpty">You have not missed any questions yet. Keep it up!</p>';return;}
+ $('incorrectList').innerHTML=incorrectAnswers.map((item,i)=>`<div class="incorrect-item"><strong>${i+1}. ${escapeHtml(item.question)}</strong><small>Your answer: ${escapeHtml(item.studentAnswer)} · Correct answer: ${escapeHtml(item.correctAnswer)}</small></div>`).join('');
+}
+function escapeHtml(value){return String(value).replace(/[&<>"']/g,ch=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[ch]));}
+function showIndividualTab(which){
+ const showIncorrect=which==='incorrect';
+ $('incorrectPanel').style.display=showIncorrect?'block':'none';
+ $('gameTab').classList.toggle('active',!showIncorrect);$('incorrectTab').classList.toggle('active',showIncorrect);
+ ['kicker','formatTag','problem','answer','message','individualAnswerWrap','actions'].forEach(id=>$(id).style.display=showIncorrect?'none':'');
+}
+$('gameTab').addEventListener('click',()=>showIndividualTab('game'));
+$('incorrectTab').addEventListener('click',()=>showIndividualTab('incorrect'));
+
+$('newProblem').addEventListener('click',()=>{ $('newProblem').textContent='New problem'; next(); });
+$('submitAnswer').addEventListener('click',submitIndividualAnswer);
+// Handle Enter at the document level. The answer input is disabled after checking,
+ // so a key listener attached only to that input cannot catch the second Enter.
+document.addEventListener('keydown',e=>{
+ if(e.key!=='Enter'||playMode!=='individual'||$('game').style.display==='none')return;
+ if($('incorrectPanel').style.display==='block')return;
+ if(answered){
+  e.preventDefault();
+  e.stopImmediatePropagation();
+  $('newProblem').textContent='New problem';
+  next();
+ }else if(e.target===$('studentAnswer')&&!$('studentAnswer').disabled){
+  e.preventDefault();
+  submitIndividualAnswer();
+ }
+},true);
+$('studentName').addEventListener('keydown',e=>{if(e.key==='Enter'&&playMode==='individual')$('startGame').click()});
+$('reveal').addEventListener('click',()=>{
+ if(answer===null||revealed)return;
+ $('answer').textContent='Answer: '+answer;
+ $('message').textContent=explanation+' Compare your whiteboard answers, then move on.';
+ $('reveal').disabled=true;revealed=true;
+});
+$('mode').addEventListener('change',()=>{$('modeTag').textContent=$('mode').selectedOptions[0].text.toUpperCase()});
+$('partnerChoice').addEventListener('click',()=>{
+ playMode='partner';
+ $('partnerChoice').classList.add('selected');$('individualChoice').classList.remove('selected');
+ $('studentNameWrap').style.display='none';$('startGame').textContent='Start Partner Game';
+});
+$('individualChoice').addEventListener('click',()=>{
+ playMode='individual';
+ $('individualChoice').classList.add('selected');$('partnerChoice').classList.remove('selected');
+ $('studentNameWrap').style.display='block';$('startGame').textContent='Start Individual Game';
+ $('studentName').focus();
+});
+$('homeButton').addEventListener('click',()=>{
+ // Return to the opening mode-selection screen and reset the current session.
+ $('startPanel').style.display='block';
+ $('challengePanel').style.display='none';
+ $('game').style.display='none';
+ $('rotate').style.display='none';
+ playMode='partner';playerName='';score=0;correctCount=0;questionNumber=0;
+ answer=null;explanation='';revealed=false;answered=false;incorrectAnswers=[];attempts=[];submissionComplete=false;
+ $('doneGame').disabled=false;$('doneGame').textContent="I'm Done";$('doneGame').style.display='none';$('submissionStatus').style.display='none';$('submissionStatus').className='';
+ $('partnerChoice').classList.add('selected');
+ $('individualChoice').classList.remove('selected');
+ $('studentNameWrap').style.display='none';
+ $('studentName').value='';$('studentName').removeAttribute('aria-invalid');
+ $('startGame').textContent='Start Partner Game';
+ $('newProblem').textContent='New problem';
+ $('studentAnswer').value='';$('feedback').textContent='';
+ $('individualStats').style.display='none';$('individualTabs').style.display='none';
+ $('incorrectPanel').style.display='none';
+});
+
+$('startGame').addEventListener('click',()=>{
+ $('newProblem').disabled=false;
+ $('submitAnswer').disabled=false;
+ $('reveal').disabled=false;
+ $('doneGame').disabled=false;
+ $('doneGame').textContent="I'm Done";
+ $('submissionStatus').style.display='none';
+ $('submissionStatus').className='';
+ // Read the selected mode directly from the visible choice cards as a safeguard.
+ playMode=$('individualChoice').classList.contains('selected')?'individual':'partner';
+ if(playMode==='individual'){
+  playerName=$('studentName').value.trim();
+  if(!playerName){
+   $('studentName').focus();$('studentName').setAttribute('aria-invalid','true');
+   $('studentName').placeholder='Please enter your name';return;
+  }
+  $('studentName').removeAttribute('aria-invalid');
+  score=0;correctCount=0;questionNumber=0;incorrectAnswers=[];attempts=[];submissionComplete=false;
+  $('doneGame').disabled=false;$('doneGame').textContent="I'm Done";$('submissionStatus').style.display='none';$('submissionStatus').className='';
+  renderIncorrectAnswers();
+  $('individualTabs').style.display='flex';
+  $('individualStats').style.display='flex';
+  $('playerTag').textContent=`PLAYER: ${playerName}`;
+  $('scoreTag').textContent='SCORE: 0';$('correctTag').textContent='CORRECT: 0';
+  $('challengeNote').textContent='Earn 10 points for Newby, 15 for Mid, 20 for Mid2, 30 for Stretch, and 50 for Boss Mode.';
+  $('incorrectPanel').style.display='none';
+  $('gameTab').classList.add('active');$('incorrectTab').classList.remove('active');
+ }else{
+  questionNumber=0;
+  $('individualStats').style.display='none';$('individualTabs').style.display='none';
+  $('incorrectPanel').style.display='none';
+  $('challengeNote').textContent='Students solve each problem on their whiteboards. When everyone is ready, reveal the answer and compare solutions.';
+ }
+ $('startPanel').style.display='none';
+ $('challengePanel').style.display='block';
+ $('game').style.display='block';
+ $('modeTag').textContent=$('mode').selectedOptions[0].text.toUpperCase();
+ next();
+});
+$('modeTag').textContent=$('mode').selectedOptions[0].text.toUpperCase();
+</script>
+</body>
+</html>
